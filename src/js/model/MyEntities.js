@@ -22,5 +22,32 @@ export class MyEntity extends EntityManager.Entity {
 }
 
 // TODO-REPEATED: add new entity class declarations here
+export class MediaItem extends EntityManager.Entity {
+    title;
+    src;
+    contentType;
+    added = Date.now();
+    description = "";
+
+    constructor(title, src, contentType ) {
+        super();
+        this.title = title;
+        this.src = src;
+        this.contentType = contentType;
+    }
+
+    get addedDateString() {
+        return (new Date(this.added)).toLocaleDateString();
+    }
+
+    get mediaType() {
+        if (!this.contentType) {
+            return "UNKNOWN";
+        }
+        const [type, subtype] = this.contentType.split("/");
+
+        return type || "UNKNOWN";
+    }
+}
 
 
