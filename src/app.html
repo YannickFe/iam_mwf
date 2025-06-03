@@ -26,7 +26,26 @@
 <body data-mwf-application="MyApplication" class="mwf-loading-app">
 
 <!-- TODO-REPEATED: add new views here -->
-<div class="mwf-view mwf-view-initial" data-mwf-viewcontroller="MyInitialViewController">
+<div class="mwf-view mwf-view-initial" id="mediaOverview" data-mwf-viewcontroller="MyInitialViewController">
+    <header>
+        <button class="mwf-imgbutton mwf-img-sandwich mwf-left-align"></button>
+        <h1 class="mwf-left-align">Medien</h1>
+        <button class="mwf-imgbutton mwf-img-plus mwf-right-align"></button>
+    </header>
+    <main class="mwf-scrollview">
+        <ul class="mwf-listview" data-mwf-listitem-view="myapp-listitem">
+            <li class="mwf-listitem mwf-template" data-mwf-templatename="myapp-listitem">
+                <img class="mwf-left-align" src="https://picsum.photos/100/100"/>
+                <div class="mwf-li-titleblock">
+                    <h2>lorem ipsum</h2>
+                    <h3>dolor sit amet</h3>
+                </div>
+                <button class="mwf-imgbutton mwf-img-options-vertical mwf-right-align">
+                </button>
+            </li>
+        </ul>
+    </main>
+    <footer></footer>
 </div>
 
 </body>
