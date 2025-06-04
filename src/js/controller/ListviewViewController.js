@@ -3,6 +3,7 @@
  */
 import {mwf} from "vfh-iam-mwf-base";
 import * as entities from "../model/MyEntities.js";
+import {GenericCRUDImplLocal} from "vfh-iam-mwf-base";
 
 export default class ListviewViewController extends mwf.ViewController {
 
@@ -11,7 +12,6 @@ export default class ListviewViewController extends mwf.ViewController {
     root;
     // TODO-REPEATED: declare custom instance attributes for this controller
 
-    items;
     addNewMediaItemElement;
 
     /*
@@ -21,14 +21,17 @@ export default class ListviewViewController extends mwf.ViewController {
         // TODO: do databinding, set listeners, initialise the view
         this.addNewMediaItemElement = this.root.querySelector("#addNewMediaItem");
         this.addNewMediaItemElement.onclick = () => {
-            this.addToListview(
-                new entities.MediaItem("m new", "https://picsum.photos/100/100")
-            )
+            this.crudops.create(
+                new entities.MediaItem("m", "https://picsum.photos/100/100")
+            ).then((createdM) => {
+                this.addToListview(createdM)
+            })
         }
 
 
-        this.initialiseListview(this.items);
-
+        this.crudops.readAll().then((items) => {
+            this.initialiseListview(items);
+        });
         // call the superclass once creation is done
         super.oncreate();
     }
@@ -38,11 +41,8 @@ export default class ListviewViewController extends mwf.ViewController {
         super();
         console.log("ListviewViewController()");
 
-        this.items = [
-            new entities.MediaItem("m1","https://picsum.photos/100/100"),
-            new entities.MediaItem("m2","https://picsum.photos/200/150"),
-            new entities.MediaItem("m3","https://picsum.photos/150/200"),
-        ];    }
+        this.crudops = GenericCRUDImplLocal.newInstance("MediaItem");
+    }
 
     /*
      * for views that initiate transitions to other views
