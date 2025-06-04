@@ -52,4 +52,18 @@ export default class ListviewViewController extends mwf.ViewController {
         // TODO: implement how selection of itemobj shall be handled
         alert("Element " + itemobj.title + itemobj._id + " wurde ausgewählt!");
     }
+
+    deleteItem(item) {
+        this.crudops.delete(item._id).then(() => {
+            this.removeFromListview(item._id);
+        });
+    }
+
+    editItem(item){
+        // TODO: implement item editing
+        item.title = (item.title + item.title);
+        this.crudops.update(item._id,item).then(() => {
+            this.updateInListview(item._id,item);
+        });
+    }
 }
