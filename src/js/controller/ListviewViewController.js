@@ -1,9 +1,9 @@
 /**
  * @author Jörn Kreutel
  */
-import {mwf} from "vfh-iam-mwf-base";
-import * as entities from "../model/MyEntities.js";
-import {GenericCRUDImplLocal} from "vfh-iam-mwf-base";
+import { mwf } from 'vfh-iam-mwf-base';
+import * as entities from '../model/MyEntities.js';
+import { GenericCRUDImplLocal } from 'vfh-iam-mwf-base';
 
 export default class ListviewViewController extends mwf.ViewController {
 
@@ -19,19 +19,14 @@ export default class ListviewViewController extends mwf.ViewController {
      */
     async oncreate() {
         // TODO: do databinding, set listeners, initialise the view
-        this.addNewMediaItemElement = this.root.querySelector("#addNewMediaItem");
+        this.addNewMediaItemElement = this.root.querySelector( '#addNewMediaItem' );
         this.addNewMediaItemElement.onclick = () => {
-            this.crudops.create(
-                new entities.MediaItem("m", "https://picsum.photos/100/100")
-            ).then((createdM) => {
-                this.addToListview(createdM)
-            })
-        }
+            this.createNewItem()
+        };
 
-
-        this.crudops.readAll().then((items) => {
-            this.initialiseListview(items);
-        });
+        entities.MediaItem.readAll().then( ( items ) => {
+            this.initialiseListview( items );
+        } );
         // call the superclass once creation is done
         super.oncreate();
     }
@@ -39,31 +34,38 @@ export default class ListviewViewController extends mwf.ViewController {
 
     constructor() {
         super();
-        console.log("ListviewViewController()");
-
-        this.crudops = GenericCRUDImplLocal.newInstance("MediaItem");
+        console.log( 'ListviewViewController()' );
     }
 
 
     /*
      * for views with listviews: react to the selection of a listitem
      */
-    onListItemSelected(itemobj, listviewid) {
+    onListItemSelected( itemobj, listviewid ) {
         // TODO: implement how selection of itemobj shall be handled
-        alert("Element " + itemobj.title + itemobj._id + " wurde ausgewählt!");
+        alert( 'Element ' + itemobj.title + itemobj._id + ' wurde ausgewählt!' );
     }
 
-    deleteItem(item) {
-        this.crudops.delete(item._id).then(() => {
-            this.removeFromListview(item._id);
-        });
+    deleteItem( item ) {
+        item.delete().then( () => {
+            this.removeFromListview( item._id );
+        } );
     }
 
-    editItem(item){
+    editItem( item ) {
         // TODO: implement item editing
-        item.title = (item.title + item.title);
-        this.crudops.update(item._id,item).then(() => {
-            this.updateInListview(item._id,item);
-        });
+        item.title = ( item.title + item.title );
+
+        item.update().then( () => {
+            this.updateInListview( item._id, item );
+        } );
+    }
+
+    createNewItem() {
+        var newItem = new entities.MediaItem( 'm', 'https://picsum.photos/100/100' );
+
+        newItem.create().then( () => {
+            this.addToListview( newItem );
+        } );
     }
 }
