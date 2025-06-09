@@ -4,8 +4,8 @@
  * this skript defines the data types used by the application and the model operations for handling instances of the latter
  */
 
-import {mwfUtils} from "vfh-iam-mwf-base";
-import {EntityManager} from "vfh-iam-mwf-base";
+import { mwfUtils } from 'vfh-iam-mwf-base';
+import { EntityManager } from 'vfh-iam-mwf-base';
 
 /*************
  * example entity
@@ -27,9 +27,9 @@ export class MediaItem extends EntityManager.Entity {
     src;
     contentType;
     added = Date.now();
-    description = "";
+    description = '';
 
-    constructor(title, src, contentType ) {
+    constructor( title, src, contentType ) {
         super();
         this.title = title;
         this.src = src;
@@ -37,16 +37,16 @@ export class MediaItem extends EntityManager.Entity {
     }
 
     get addedDateString() {
-        return (new Date(this.added)).toLocaleDateString();
+        return ( new Date( this.added ) ).toLocaleDateString();
     }
 
     get mediaType() {
-        if (!this.contentType) {
-            return "UNKNOWN";
+        if ( !this.contentType ) {
+            return 'UNKNOWN';
         }
-        const [type, subtype] = this.contentType.split("/");
+        const [ type, subtype ] = this.contentType.split( '/' );
 
-        return type || "UNKNOWN";
+        return type || 'UNKNOWN';
     }
 }
 

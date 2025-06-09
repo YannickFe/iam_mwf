@@ -3,15 +3,15 @@
  * by the framework at runtime and "exports" them to the framework
  * setting the mwf.app.components object
  */
-import {mwf} from "vfh-iam-mwf-base";
-import {GenericDialogTemplateViewController} from "vfh-iam-mwf-base";
+import { mwf } from 'vfh-iam-mwf-base';
+import { GenericDialogTemplateViewController } from 'vfh-iam-mwf-base';
 
 /* application libraries: the main application class */
-import MyApplication from "./MyApplication.js";
+import MyApplication from './MyApplication.js';
 /* application libraries: model */
-import * as entities from "./model/MyEntities.js";
+import * as entities from './model/MyEntities.js';
 /* application libraries: view controllers */
-import MyInitialViewController from "./controller/MyInitialViewController.js";
+import MyInitialViewController from './controller/MyInitialViewController.js';
 import ListviewViewController from './controller/ListviewViewController';
 // TODO-REPEATED: import any further view controllers here
 
@@ -24,11 +24,11 @@ mwf.app.components = {
     MyInitialViewController,
     ListviewViewController,
     // TODO-REPEATED: export any further view controllers here
-}
+};
 
 // then start the application
 window.onload = () => {
     mwf.onloadApplication();
-}
+};
 
 

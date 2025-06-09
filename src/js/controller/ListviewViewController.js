@@ -21,7 +21,7 @@ export default class ListviewViewController extends mwf.ViewController {
         // TODO: do databinding, set listeners, initialise the view
         this.addNewMediaItemElement = this.root.querySelector( '#addNewMediaItem' );
         this.addNewMediaItemElement.onclick = () => {
-            this.createNewItem()
+            this.createNewItem();
         };
 
         entities.MediaItem.readAll().then( ( items ) => {
@@ -53,38 +53,38 @@ export default class ListviewViewController extends mwf.ViewController {
     }
 
     editItem( item ) {
-        this.showDialog("mediaItemDialog", {
+        this.showDialog( 'mediaItemDialog', {
             item: item,
             actionBindings: {
-                submitForm: ((event) => {
+                submitForm: ( ( event ) => {
                     event.original.preventDefault();
-                    item.update().then(() => {
-                        this.updateInListview(item._id,item);
-                    });
+                    item.update().then( () => {
+                        this.updateInListview( item._id, item );
+                    } );
                     this.hideDialog();
-                })
+                } ),
             },
-            deleteItem: ((event) => {
-                this.deleteItem(item);
+            deleteItem: ( ( event ) => {
+                this.deleteItem( item );
                 this.hideDialog();
-            })
-        });
+            } ),
+        } );
     }
 
     createNewItem() {
-        var newItem = new entities.MediaItem('','https://picsum.photos/100/100');
+        var newItem = new entities.MediaItem( '', 'https://picsum.photos/100/100' );
 
-        this.showDialog('mediaItemDialog',{
+        this.showDialog( 'mediaItemDialog', {
             item: newItem,
             actionBindings: {
-                submitForm: ((event) => {
+                submitForm: ( ( event ) => {
                     event.original.preventDefault();
-                    newItem.create().then(() => {
-                        this.addToListview(newItem);
-                    });
+                    newItem.create().then( () => {
+                        this.addToListview( newItem );
+                    } );
                     this.hideDialog();
-                })
-            }
-        });
+                } ),
+            },
+        } );
     }
 }
