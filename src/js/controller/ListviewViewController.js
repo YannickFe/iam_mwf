@@ -24,6 +24,16 @@ export default class ListviewViewController extends mwf.ViewController {
         entities.MediaItem.readAll().then( ( items ) => {
             this.initialiseListview( items );
         } );
+
+        this.addListener(new mwf.EventMatcher("crud","created","MediaItem"),((event) => {
+            this.addToListview(event.data);
+        }));
+        this.addListener(new mwf.EventMatcher("crud","updated","MediaItem"),((event) => {
+            this.updateInListview(event.data._id,event.data);
+        }));
+        this.addListener(new mwf.EventMatcher("crud","deleted","MediaItem"),((event) => {
+            this.removeFromListview(event.data);
+        }));
         // call the superclass once creation is done
         super.oncreate();
     }
@@ -36,9 +46,11 @@ export default class ListviewViewController extends mwf.ViewController {
 
 
     deleteItem( item ) {
-        item.delete(() => {
-            this.removeFromListview(item._id);
-        });
+        item.delete();
+    }
+
+    updateItem( item ) {
+        item.update();
     }
 
     editItem( item ) {
@@ -47,9 +59,7 @@ export default class ListviewViewController extends mwf.ViewController {
             actionBindings: {
                 submitForm: ( ( event ) => {
                     event.original.preventDefault();
-                    item.update().then( () => {
-                        this.updateInListview( item._id, item );
-                    } );
+                    this.updateItem( item );
                     this.hideDialog();
                 } ),
             },
@@ -68,19 +78,10 @@ export default class ListviewViewController extends mwf.ViewController {
             actionBindings: {
                 submitForm: ( ( event ) => {
                     event.original.preventDefault();
-                    newItem.create().then( () => {
-                        this.addToListview( newItem );
-                    } );
+                    newItem.create();
                     this.hideDialog();
                 } ),
             },
         } );
-    }
-
-    async onReturnFromNextView(nextviewid,returnValue,returnStatus)
-    {
-        if (nextviewid === "mediaReadview" && returnValue && returnValue.deletedItem) {
-            this.removeFromListview(returnValue.deletedItem._id);
-        }
     }
 }
