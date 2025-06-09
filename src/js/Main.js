@@ -13,6 +13,7 @@ import * as entities from './model/MyEntities.js';
 /* application libraries: view controllers */
 import MyInitialViewController from './controller/MyInitialViewController.js';
 import ListviewViewController from './controller/ListviewViewController';
+import ReadviewViewController from './controller/ReadviewViewController';
 // TODO-REPEATED: import any further view controllers here
 
 // we export the framework modules required by the application and the application modules required by the framework
@@ -23,6 +24,7 @@ mwf.app.components = {
     MyApplication,
     MyInitialViewController,
     ListviewViewController,
+    ReadviewViewController,
     // TODO-REPEATED: export any further view controllers here
 };
 

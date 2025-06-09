@@ -3,14 +3,12 @@
  */
 import { mwf } from 'vfh-iam-mwf-base';
 import * as entities from '../model/MyEntities.js';
-import { GenericCRUDImplLocal } from 'vfh-iam-mwf-base';
 
 export default class ListviewViewController extends mwf.ViewController {
 
     // instance attributes set by mwf after instantiation
     // args;
     root;
-    // TODO-REPEATED: declare custom instance attributes for this controller
 
     addNewMediaItemElement;
 
@@ -18,7 +16,6 @@ export default class ListviewViewController extends mwf.ViewController {
      * for any view: initialise the view
      */
     async oncreate() {
-        // TODO: do databinding, set listeners, initialise the view
         this.addNewMediaItemElement = this.root.querySelector( '#addNewMediaItem' );
         this.addNewMediaItemElement.onclick = () => {
             this.createNewItem();
@@ -38,18 +35,10 @@ export default class ListviewViewController extends mwf.ViewController {
     }
 
 
-    /*
-     * for views with listviews: react to the selection of a listitem
-     */
-    onListItemSelected( itemobj, listviewid ) {
-        // TODO: implement how selection of itemobj shall be handled
-        alert( 'Element ' + itemobj.title + itemobj._id + ' wurde ausgewählt!' );
-    }
-
     deleteItem( item ) {
-        item.delete().then( () => {
-            this.removeFromListview( item._id );
-        } );
+        item.delete(() => {
+            this.removeFromListview(item._id);
+        });
     }
 
     editItem( item ) {
@@ -86,5 +75,12 @@ export default class ListviewViewController extends mwf.ViewController {
                 } ),
             },
         } );
+    }
+
+    async onReturnFromNextView(nextviewid,returnValue,returnStatus)
+    {
+        if (nextviewid === "mediaReadview" && returnValue && returnValue.deletedItem) {
+            this.removeFromListview(returnValue.deletedItem._id);
+        }
     }
 }
