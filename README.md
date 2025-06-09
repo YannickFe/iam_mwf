@@ -28,6 +28,12 @@ In the project directory, run: npm run serve
 # Access
 By default, the application is served at http://localhost:8080; in case port 8080 is not available, the serve script assigns an alternative port, which will be displayed a few lines underneath of the command. 
 
+# Bundling for Task Submission
+To create a bundle for submission, you may run:
+```bash
+git archive --format=tar.gz -o your-name_iam-mwf.tar.gz HEAD
+```
+
 # Images
 
 - mwf-img-backward
