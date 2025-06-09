@@ -62,11 +62,11 @@ export default class ListviewViewController extends mwf.ViewController {
                     this.updateItem( item );
                     this.hideDialog();
                 } ),
+                deleteItem: ( ( event ) => {
+                    this.deleteItem( item );
+                    this.hideDialog();
+                } ),
             },
-            deleteItem: ( ( event ) => {
-                this.deleteItem( item );
-                this.hideDialog();
-            } ),
         } );
     }
 
