@@ -52,7 +52,7 @@ export default class ListviewViewController extends mwf.ViewController {
 
     editItem( item ) {
         // TODO: check how handleDialogWithController might work
-        this.showDialog( 'mediaItemDialog', {
+        this.showDialog( 'editDialog', {
             item: item,
         } );
     }
@@ -60,7 +60,7 @@ export default class ListviewViewController extends mwf.ViewController {
     createNewItem() {
         var newItem = new entities.MediaItem( '', 'https://picsum.photos/100/100' );
 
-        this.showDialog( 'mediaItemDialog', {
+        this.showDialog( 'editDialog', {
             item: newItem,
             actionBindings: {
                 submitForm: ( ( event ) => {
