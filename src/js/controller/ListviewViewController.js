@@ -44,13 +44,9 @@ export default class ListviewViewController extends mwf.ViewController {
         console.log( 'ListviewViewController()' );
     }
 
-
+    // used in on-click of delete Button
     deleteItem( item ) {
         item.delete();
-    }
-
-    updateItem( item ) {
-        item.update();
     }
 
     editItem( item ) {
@@ -59,7 +55,7 @@ export default class ListviewViewController extends mwf.ViewController {
             actionBindings: {
                 submitForm: ( ( event ) => {
                     event.original.preventDefault();
-                    this.updateItem( item );
+                    item.update();
                     this.hideDialog();
                 } ),
                 deleteItem: ( ( event ) => {
