@@ -1,4 +1,4 @@
-import {GenericDialogTemplateViewController} from "vfh-iam-mwf-base";
+import { GenericDialogTemplateViewController } from 'vfh-iam-mwf-base';
 
 export default class EditDialogViewController extends GenericDialogTemplateViewController {
 
@@ -20,16 +20,36 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
         var dialog = this.args.dialog;
         this.viewProxy = this.bindElement("mediaItemDialog",{item: mediaItem},this.root).viewProxy;
 
-        // submit is handled by ListviewViewController::editItem / createItem
+        // handing the edit form submission
+        this.viewProxy.bindAction("submitForm", (event) => {
+            event.original.preventDefault();
 
+            // create or update depending on status created
+            if (mediaItem.created ) {
+                mediaItem.update();
+            } else {
+                mediaItem.create();
+            }
+
+            // hide the dialog when form is submitted
+            this.hideDialog();
+        });
+
+        // handle the forms delete button
+        this.viewProxy.bindAction("deleteItem", (event) => {
+            mediaItem.delete();
+            this.hideDialog();
+        });
+
+        // handling the file input
         this.viewProxy.bindAction("fileSelected",(event) => {
+            const file = event.original.target.files[0];
+
             // check if a file was selected
-            if (event.original.target.files[0]) {
+            if (file) {
                 const fileReader = new FileReader();
 
-                console.log("fileSelected: ", event.original.target.files[0]);
-
-                fileReader.readAsDataURL(event.original.target.files[0]);
+                fileReader.readAsDataURL(file);
 
                 fileReader.onload = (event) => {
                     mediaItem.src = event.target.result;
@@ -38,10 +58,5 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
                 }
             }
         })
-    }
-
-    async onresume() {
-        console.log( "EditDialogViewController.onresume(): ", this.args, this.root );
-        await super.onresume();
     }
 }

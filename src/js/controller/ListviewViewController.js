@@ -3,6 +3,7 @@
  */
 import { mwf } from 'vfh-iam-mwf-base';
 import * as entities from '../model/MyEntities.js';
+import EditDialogViewController from './EditDialogViewController';
 
 export default class ListviewViewController extends mwf.ViewController {
 
@@ -50,19 +51,9 @@ export default class ListviewViewController extends mwf.ViewController {
     }
 
     editItem( item ) {
+        // TODO: check how handleDialogWithController might work
         this.showDialog( 'mediaItemDialog', {
             item: item,
-            actionBindings: {
-                submitForm: ( ( event ) => {
-                    event.original.preventDefault();
-                    item.update();
-                    this.hideDialog();
-                } ),
-                deleteItem: ( ( event ) => {
-                    this.deleteItem( item );
-                    this.hideDialog();
-                } ),
-            },
         } );
     }
 
