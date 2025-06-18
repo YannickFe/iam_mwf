@@ -89,8 +89,16 @@
     <main>
         <h2>{{#if item.created}}Medium editieren{{else}}Neues Medium{{/if}}</h2>
         <form id="itemEditForm" on-submit="submitForm">
-            <input name="title" autocomplete="off" class="mwf-autofocus" type="text" placeholder="Titel" value="{{item.title}}"/>
-            <input name="imgsrc" on-change="fileSelected" type="file"/>
+
+            <fieldset class="mwf-material">
+                <legend>Titel</legend>
+                <input name="title" autocomplete="off" class="mwf-autofocus" type="text" value="{{item.title}}"/>
+            </fieldset>
+
+            <fieldset class="mwf-material">
+                <input name="imgsrc" on-change="fileSelected" type="file"/>
+            </fieldset>
+
             <img id="previewImg" src="{{item.src}}"/>
             <div class="mwf-buttonbar">
                 <button class="mwf-left-align mwf-button" type="button" on-click="deleteItem"
