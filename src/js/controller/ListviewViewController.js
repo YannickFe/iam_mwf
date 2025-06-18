@@ -3,7 +3,6 @@
  */
 import { mwf } from 'vfh-iam-mwf-base';
 import * as entities from '../model/MyEntities.js';
-import EditDialogViewController from './EditDialogViewController';
 
 export default class ListviewViewController extends mwf.ViewController {
 
@@ -58,7 +57,7 @@ export default class ListviewViewController extends mwf.ViewController {
     }
 
     createNewItem() {
-        var newItem = new entities.MediaItem( '', 'https://picsum.photos/100/100' );
+        var newItem = new entities.MediaItem( '', '' );
 
         this.showDialog( 'editDialog', {
             item: newItem,
