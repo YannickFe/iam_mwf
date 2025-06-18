@@ -3,3 +3,11 @@
     width: 100%;
     max-width: 100%;
 }
+
+#previewImg {
+    display: block;
+    max-width: 40vw;
+    max-height: 20vh;
+    margin: 1rem auto; /* equal margin on left and right, auto-centering */
+    object-fit: contain; /* do not change aspect ratio */
+}
