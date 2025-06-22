@@ -55,6 +55,7 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
 
                     // set the mediaItem title to the file name if not set
                     if ( !mediaItem.title ) {
+                        // TODO: figure out weird bug - mediaItem title is only being set to the file name the first time when aborting after by clicking outside the dialog
                         mediaItem.title = file.name;
                         this.root.querySelector('input[name="title"]').value = mediaItem.title
                     }
