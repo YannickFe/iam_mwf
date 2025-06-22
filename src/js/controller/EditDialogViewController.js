@@ -17,7 +17,6 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
 
         // get mediaItem and set the viewProxy
         var mediaItem = this.args.item;
-        var dialog = this.args.dialog;
         this.viewProxy = this.bindElement("editDialog",{item: mediaItem},this.root).viewProxy;
 
         // handing the edit form submission
