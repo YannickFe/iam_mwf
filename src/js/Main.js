@@ -11,7 +11,6 @@ import MyApplication from './MyApplication.js';
 /* application libraries: model */
 import * as entities from './model/MyEntities.js';
 /* application libraries: view controllers */
-import MyInitialViewController from './controller/MyInitialViewController.js';
 import ListviewViewController from './controller/ListviewViewController';
 import ReadviewViewController from './controller/ReadviewViewController';
 import EditDialogViewController from './controller/EditDialogViewController';
@@ -23,7 +22,6 @@ mwf.app.components = {
     GenericDialogTemplateViewController,
     /* application modules */
     MyApplication,
-    MyInitialViewController, // TODO: check if needed - remove
     ListviewViewController,
     ReadviewViewController,
     EditDialogViewController,
