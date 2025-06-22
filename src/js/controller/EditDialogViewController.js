@@ -1,4 +1,5 @@
 import { GenericDialogTemplateViewController } from 'vfh-iam-mwf-base';
+import { LocalFileSystemReferenceHandler } from '../model/LocalFileSystemReferenceHandler';
 
 export default class EditDialogViewController extends GenericDialogTemplateViewController {
 
@@ -19,9 +20,19 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
         var mediaItem = this.args.item;
         this.viewProxy = this.bindElement("editDialog",{item: mediaItem},this.root).viewProxy;
 
+        const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
+
         // handing the edit form submission
-        this.viewProxy.bindAction("submitForm", (event) => {
+        this.viewProxy.bindAction("submitForm", async (event) => {
             event.original.preventDefault();
+
+            // create custom lfs url from file blob
+            if ( mediaItem.file ) {
+                const lfsUrl = await lfsReader.createLocalFileSystemReference( mediaItem.file );
+                // instantly resolve it again so the item will be displayed correctly uppon returning to ListView
+                mediaItem.src = await lfsReader.resolveLocalFileSystemReference( lfsUrl );
+                delete mediaItem.file;
+            }
 
             // create or update depending on status created
             if (mediaItem.created ) {
@@ -31,7 +42,7 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
             }
 
             // hide the dialog when form is submitted
-            this.hideDialog();
+            await this.hideDialog();
         });
 
         // handle the forms delete button
@@ -46,22 +57,17 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
 
             // check if a file was selected
             if (file) {
-                const fileReader = new FileReader();
+                mediaItem.file = file;
+                mediaItem.src = URL.createObjectURL(file);
 
-                fileReader.readAsDataURL(file);
-
-                fileReader.onload = (event) => {
-                    mediaItem.src = event.target.result;
-
-                    // set the mediaItem title to the file name if not set
-                    if ( !mediaItem.title ) {
-                        // TODO: figure out weird bug - mediaItem title is only being set to the file name the first time when aborting after by clicking outside the dialog
-                        mediaItem.title = file.name.replace(/\.[^/.]+$/, "");
-                    }
-
-                    // update the mediaItem in the view
-                    this.viewProxy.update({ item: mediaItem})
+                // set the mediaItem title to the file name if not set
+                if ( !mediaItem.title ) {
+                    // TODO: figure out weird bug - mediaItem title is only being set to the file name the first time when aborting after by clicking outside the dialog
+                    mediaItem.title = file.name.replace(/\.[^/.]+$/, "");
                 }
+
+                // update the mediaItem in the view
+                this.viewProxy.update({ item: mediaItem});
             }
         })
     }

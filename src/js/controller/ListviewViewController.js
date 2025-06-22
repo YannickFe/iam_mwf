@@ -3,6 +3,7 @@
  */
 import { mwf } from 'vfh-iam-mwf-base';
 import * as entities from '../model/MyEntities.js';
+import { LocalFileSystemReferenceHandler } from '../model/LocalFileSystemReferenceHandler';
 
 export default class ListviewViewController extends mwf.ViewController {
 
@@ -18,10 +19,17 @@ export default class ListviewViewController extends mwf.ViewController {
     async oncreate() {
         this.addNewMediaItemElement = this.root.querySelector( '#addNewMediaItem' );
         this.addNewMediaItemElement.onclick = () => {
-            this.createNewItem();
+            this.createNewItem(); // TODO: remove
         };
 
-        entities.MediaItem.readAll().then( ( items ) => {
+        const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
+
+        entities.MediaItem.readAll().then( async ( items ) => {
+            // foreach item resolve custom lfs url
+            for ( const item of items ) {
+                // resolveLocalFileSystemReference handles URLs not being custom itself
+                item.src = await lfsReader.resolveLocalFileSystemReference( item.src );
+            }
             this.initialiseListview( items );
         } );
 
