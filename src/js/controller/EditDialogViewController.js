@@ -53,6 +53,12 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
                 fileReader.onload = (event) => {
                     mediaItem.src = event.target.result;
 
+                    // set the mediaItem title to the file name if not set
+                    if ( !mediaItem.title ) {
+                        mediaItem.title = file.name;
+                        this.root.querySelector('input[name="title"]').value = mediaItem.title
+                    }
+
                     this.root.querySelector("#previewImg").src = event.target.result;
                 }
             }
