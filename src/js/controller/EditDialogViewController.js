@@ -57,10 +57,10 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
                     if ( !mediaItem.title ) {
                         // TODO: figure out weird bug - mediaItem title is only being set to the file name the first time when aborting after by clicking outside the dialog
                         mediaItem.title = file.name.replace(/\.[^/.]+$/, "");
-                        this.root.querySelector('input[name="title"]').value = mediaItem.title
                     }
 
-                    this.root.querySelector("#previewImg").src = event.target.result;
+                    // update the mediaItem in the view
+                    this.viewProxy.update({ item: mediaItem})
                 }
             }
         })
