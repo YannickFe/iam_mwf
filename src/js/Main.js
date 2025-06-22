@@ -23,7 +23,7 @@ mwf.app.components = {
     GenericDialogTemplateViewController,
     /* application modules */
     MyApplication,
-    MyInitialViewController,
+    MyInitialViewController, // TODO: check if needed - remove
     ListviewViewController,
     ReadviewViewController,
     EditDialogViewController,
