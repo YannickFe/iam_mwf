@@ -112,5 +112,21 @@
     </main>
 </div>
 
+<div class="mwf-dialog mwf-popup mwf-template mwf-databind mwf-view-component"
+     data-mwf-viewcontroller="GenericDialogTemplateViewController" data-mwf-templatename="deleteDialog">
+    <main>
+
+        <h2>Medium löschen</h2>
+
+        <p>Möchten Sie das Medium "{{item.title}}" löschen?</p>
+
+        <div class="mwf-buttonbar">
+            <button class="mwf-left-align mwf-button" type="button" on-click="cancelDelete">Abbrechen</button>
+            <button class="mwf-left-align mwf-button" type="button" on-click="doDelete">Löschen</button>
+        </div>
+
+    </main>
+</div>
+
 </body>
 </html>

@@ -53,8 +53,21 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
 
         // handle the forms delete button
         this.viewProxy.bindAction("deleteItem", (event) => {
-            mediaItem.delete();
             this.hideDialog();
+
+            // TODO: figure out weird bug - delete only works the first time
+            this.showDialog( 'deleteDialog', {
+                item: mediaItem,
+                actionBindings: {
+                    cancelDelete: ( ( event ) => {
+                        this.hideDialog();
+                    } ),
+                    doDelete: ( ( event ) => {
+                        mediaItem.delete();
+                        this.hideDialog();
+                    })
+                },
+            });
         });
 
         // handling the file input
@@ -68,7 +81,7 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
 
                 // set the mediaItem title to the file name if not set
                 if ( !mediaItem.title ) {
-                    // TODO: figure out weird bug - mediaItem title is only being set to the file name the first time when aborting after by clicking outside the dialog
+                    // TODO: figure out weird bug - mediaItem title is only being set to the file name the first time
                     mediaItem.title = file.name.replace(/\.[^/.]+$/, "");
                 }
 
