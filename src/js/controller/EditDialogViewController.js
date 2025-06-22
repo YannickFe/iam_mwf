@@ -1,6 +1,8 @@
 import { GenericDialogTemplateViewController } from 'vfh-iam-mwf-base';
 import { LocalFileSystemReferenceHandler } from '../model/LocalFileSystemReferenceHandler';
 
+const apiBaseUrl = 'http://localhost:7077'
+
 export default class EditDialogViewController extends GenericDialogTemplateViewController {
 
     // instance attributes set by mwf after instantiation
@@ -26,12 +28,17 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
         this.viewProxy.bindAction("submitForm", async (event) => {
             event.original.preventDefault();
 
-            // create custom lfs url from file blob
-            if ( mediaItem.file ) {
-                const lfsUrl = await lfsReader.createLocalFileSystemReference( mediaItem.file );
-                // instantly resolve it again so the item will be displayed correctly uppon returning to ListView
-                mediaItem.src = await lfsReader.resolveLocalFileSystemReference( lfsUrl );
-                delete mediaItem.file;
+            if ( !event.original.target.elements['remote'] ) {
+                // create custom lfs url from file blob
+                if ( mediaItem.file ) {
+                    const lfsUrl = await lfsReader.createLocalFileSystemReference( mediaItem.file );
+                    // instantly resolve it again so the item will be displayed correctly uppon returning to ListView
+                    mediaItem.src = await lfsReader.resolveLocalFileSystemReference( lfsUrl );
+                    delete mediaItem.file;
+                }
+            } else {
+                // save on remote and set src accordingly
+                alert('remote');
             }
 
             // validate input
