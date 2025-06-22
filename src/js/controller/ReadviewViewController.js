@@ -18,9 +18,20 @@ export default class ViewControllerTemplate extends mwf.ViewController {
         var mediaItem = this.args.item;
         this.viewProxy = this.bindElement("mediaReadviewTemplate",{item: mediaItem},this.root).viewProxy;
         this.viewProxy.bindAction("deleteItem",(() => {
-            mediaItem.delete().then(() => {
-                this.previousView();
-            })
+            this.showDialog( 'deleteDialog', {
+                item: mediaItem,
+                actionBindings: {
+                    cancelDelete: ( ( event ) => {
+                        this.hideDialog();
+                    } ),
+                    doDelete: ( ( event ) => {
+                        this.hideDialog();
+                        mediaItem.delete().then(() => {
+                            this.previousView();
+                        })
+                    })
+                },
+            });
         }));
 
         // call the superclass once creation is done
