@@ -61,13 +61,6 @@ export default class ListviewViewController extends mwf.ViewController {
 
         this.showDialog( 'editDialog', {
             item: newItem,
-            actionBindings: {
-                submitForm: ( ( event ) => {
-                    event.original.preventDefault();
-                    newItem.create();
-                    this.hideDialog();
-                } ),
-            },
         } );
     }
 }
