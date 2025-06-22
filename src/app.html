@@ -90,12 +90,10 @@
         <h2>{{#if item.created}}Medium editieren{{else}}Neues Medium{{/if}}</h2>
         <form id="itemEditForm" on-submit="submitForm">
 
-            {{#if !item.created}}
             <fieldset class="mwf-material">
                 <legend>Remote speichern</legend>
-                <input name="remote" autocomplete="off" class="mwf-autofocus" type="checkbox" value="{{item.remote}}"/>
+                <input name="remote" autocomplete="off" class="mwf-autofocus" type="checkbox" value="{{item.remote}}" disabled="{{#if item.created}}disabled{{/if}}"/>
             </fieldset>
-            {{/if}}
 
             <fieldset class="mwf-material">
                 <legend>Titel{{error}}</legend>

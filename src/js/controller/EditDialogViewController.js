@@ -28,17 +28,38 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
         this.viewProxy.bindAction("submitForm", async (event) => {
             event.original.preventDefault();
 
-            if ( !event.original.target.elements['remote'] ) {
-                // create custom lfs url from file blob
-                if ( mediaItem.file ) {
+            if ( mediaItem.file ) {
+                if ( !event.original.target.elements[ 'remote' ] ) {
+                    // create custom lfs url from file blob
                     const lfsUrl = await lfsReader.createLocalFileSystemReference( mediaItem.file );
                     // instantly resolve it again so the item will be displayed correctly uppon returning to ListView
                     mediaItem.src = await lfsReader.resolveLocalFileSystemReference( lfsUrl );
                     delete mediaItem.file;
+                } else {
+                    // remote saving
+                    try {
+                        const formData = new FormData();
+                        formData.append( 'filedata', mediaItem.file );
+
+                        const response = await fetch( `${ apiBaseUrl }/api/upload`, {
+                            method: 'POST',
+                            body: formData
+                        } );
+
+                        if ( !response.ok ) {
+                            throw new Error( 'Upload fehlgeschlagen' );
+                        }
+
+                        const result = await response.json();
+                        console.log( 'Upload erfolgreich:', result );
+                        mediaItem.src = `${ apiBaseUrl }/${ result.data.filedata }`;
+                        delete mediaItem.file;
+                    } catch ( error ) {
+                        console.error( 'Upload Fehler:', error );
+                        this.viewProxy.update( { error: ": Upload fehlgeschlagen!" } );
+                        return;
+                    }
                 }
-            } else {
-                // save on remote and set src accordingly
-                alert('remote');
             }
 
             // validate input
