@@ -1,85 +1,126 @@
-/**
- * @author Jörn Kreutel
- */
 import { mwf } from 'vfh-iam-mwf-base';
 import * as entities from '../model/MyEntities.js';
 import { LocalFileSystemReferenceHandler } from '../model/LocalFileSystemReferenceHandler';
 
+const apiBaseUrl = 'http://localhost:7077';
+
 export default class ListviewViewController extends mwf.ViewController {
 
-    // instance attributes set by mwf after instantiation
-    // args;
     root;
-
-    addNewMediaItemElement;
-
-    /*
-     * for any view: initialise the view
-     */
-    async oncreate() {
-        this.addNewMediaItemElement = this.root.querySelector( '#addNewMediaItem' );
-        this.addNewMediaItemElement.onclick = () => {
-            this.createNewItem(); // TODO: remove
-        };
-
-        const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
-
-        entities.MediaItem.readAll().then( async ( items ) => {
-            // foreach item resolve custom lfs url
-            for ( const item of items ) {
-                // resolveLocalFileSystemReference handles URLs not being custom itself
-                item.src = await lfsReader.resolveLocalFileSystemReference( item.src );
-            }
-            this.initialiseListview( items );
-        } );
-
-        this.addListener(new mwf.EventMatcher("crud","created","MediaItem"),((event) => {
-            this.addToListview(event.data);
-        }));
-        this.addListener(new mwf.EventMatcher("crud","updated","MediaItem"),((event) => {
-            this.updateInListview(event.data._id,event.data);
-        }));
-        this.addListener(new mwf.EventMatcher("crud","deleted","MediaItem"),((event) => {
-            this.removeFromListview(event.data);
-        }));
-        // call the superclass once creation is done
-        super.oncreate();
-    }
-
 
     constructor() {
         super();
-        console.log( 'ListviewViewController()' );
+        console.log('ListviewViewController()');
     }
 
-    // used in on-click of delete Button
-    deleteItem( item ) {
+    async oncreate() {
+        this.addNewMediaItemElement = this.root.querySelector('#addNewMediaItem');
+        this.addNewMediaItemElement.onclick = () => this.createEditItem();
+
+        const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
+        const items = await entities.MediaItem.readAll();
+
+        for (const item of items) {
+            item.src = await lfsReader.resolveLocalFileSystemReference(item.src);
+        }
+
+        this.initialiseListview(items);
+
+        this.addListener(new mwf.EventMatcher("crud", "created", "MediaItem"), (event) => {
+            this.addToListview(event.data);
+        });
+        this.addListener(new mwf.EventMatcher("crud", "updated", "MediaItem"), (event) => {
+            this.updateInListview(event.data._id, event.data);
+        });
+        this.addListener(new mwf.EventMatcher("crud", "deleted", "MediaItem"), (event) => {
+            this.removeFromListview(event.data);
+        });
+
+        super.oncreate();
+    }
+
+    deleteItem(item) {
         this.showDialog( 'deleteDialog', {
             item: item,
             actionBindings: {
-                cancelDelete: ( ( event ) => {
-                    this.hideDialog();
-                } ),
-                doDelete: ( ( event ) => {
+                cancelDelete: () => this.hideDialog(),
+                doDelete: () => {
                     item.delete();
                     this.hideDialog();
-                })
+                },
             },
-        });
+        })
     }
 
-    editItem( item ) {
-        // TODO: check how handleDialogWithController might work
-        this.showDialog( 'editDialog', {
+     createEditItem(item = false) {
+        if ( !item ) {
+            item = new entities.MediaItem('', '');
+        }
+
+        this.showDialog('createEditDialog', {
             item: item,
-        } );
-    }
+            actionBindings: {
+                submitForm: async ( event ) => {
+                    event.original.preventDefault();
+                    const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
 
-    createNewItem() {
-        var newItem = new entities.MediaItem( '', '' );
+                    if (item.file) {
+                        if (!item.remote) {
+                            const lfsUrl = await lfsReader.createLocalFileSystemReference(item.file);
+                            item.src = await lfsReader.resolveLocalFileSystemReference(lfsUrl);
+                        } else {
+                            try {
+                                const formData = new FormData();
+                                formData.append('filedata', item.file);
 
-        this.showDialog( 'editDialog', {
-            item: newItem,
-        } );
+                                const response = await fetch(`${apiBaseUrl}/api/upload`, {
+                                    method: 'POST',
+                                    body: formData,
+                                });
+
+                                if (!response.ok) throw new Error('Upload fehlgeschlagen'); // TODO: better handling of failed upload
+
+                                const result = await response.json();
+                                item.src = `${apiBaseUrl}/${result.data.filedata}`;
+                            } catch (error) {
+                                console.error('Upload Fehler:', error);
+                                this.viewProxy.update({ error: ": Upload fehlgeschlagen!" });
+                                return;
+                            }
+                        }
+                        delete item.file;
+                    }
+
+                    if (item.created) {
+                        item.update();
+                    } else {
+                        item.create();
+                    }
+
+                    await this.hideDialog();
+                },
+
+                deleteItem: ( event ) => {
+                    this.hideDialog();
+                    this.deleteItem( item );
+                },
+
+                fileSelected: ( event ) => {
+                    const file = event.original.target.files[ 0 ];
+
+                    if ( file ) {
+                        item.file = file;
+                        item.src = URL.createObjectURL( file );
+
+                        if ( !item.title ) {
+                            item.title = file.name.replace( /\.[^/.]+$/, '' );
+                        }
+
+                        this.dialog.viewProxy.update( { item: item } );
+                    }
+                },
+
+            }
+        });
     }
 }
