@@ -29,7 +29,8 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
             event.original.preventDefault();
 
             if ( mediaItem.file ) {
-                if ( !event.original.target.elements[ 'remote' ] ) {
+                if ( !mediaItem.remote ) {
+
                     // create custom lfs url from file blob
                     const lfsUrl = await lfsReader.createLocalFileSystemReference( mediaItem.file );
                     // instantly resolve it again so the item will be displayed correctly uppon returning to ListView
@@ -52,6 +53,15 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
 
                         const result = await response.json();
                         console.log( 'Upload erfolgreich:', result );
+                        // https://github.com/dieschnittstelle/org.dieschnittstelle.iam.mwf.api
+                        // since we put the file to 'filedata' the path is returned at result.data.filedata
+                        // here is an actual result object as reference:
+                        //     {
+                        //         "data": {
+                        //             "contentType": "image/jpeg",
+                        //             "filedata": "content/img/1750629149187_300_100.jpeg"
+                        //          }
+                        //     }
                         mediaItem.src = `${ apiBaseUrl }/${ result.data.filedata }`;
                         delete mediaItem.file;
                     } catch ( error ) {
@@ -111,5 +121,13 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
                 this.viewProxy.update({ item: mediaItem});
             }
         })
+
+        // handling remote
+        this.viewProxy.bindAction("toggleRemote",(event) => {
+            event.original.preventDefault();
+
+            mediaItem.remote = !mediaItem.remote;
+            this.viewProxy.update({ item: mediaItem});
+        });
     }
 }

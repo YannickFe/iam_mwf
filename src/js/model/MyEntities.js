@@ -24,6 +24,7 @@ export class MyEntity extends EntityManager.Entity {
 // TODO-REPEATED: add new entity class declarations here
 export class MediaItem extends EntityManager.Entity {
     title;
+    remote;
     src;
     contentType;
     added = Date.now();
