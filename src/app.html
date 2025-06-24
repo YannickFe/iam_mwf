@@ -95,7 +95,7 @@
                 <input name="title" autocomplete="off" class="mwf-autofocus" type="text" value="{{item.title}}" required="required"/>
                 <input on-change="fileSelected" type="file" class="mwf-material-altinput" required="{{#unless item.created }}required{{ /unless }}" accept="image/*"/>
                 <label class="mwf-material-altinput mwf-imgbutton mwf-img-camera">Foto</label>
-                <input type="checkbox" on-change="toggleRemote" value="{{item.remote}}" disabled="{{#if item.created}}disabled{{/if}}" title="Remote speichern"/>
+                <input type="checkbox" checked="{{item.remote}}" disabled="{{#if item.created}}disabled{{/if}}" title="Remote speichern"/>
             </fieldset>
 
             <fieldset class="mwf-material">

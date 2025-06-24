@@ -35,8 +35,9 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
                     const lfsUrl = await lfsReader.createLocalFileSystemReference( mediaItem.file );
                     // instantly resolve it again so the item will be displayed correctly uppon returning to ListView
                     mediaItem.src = await lfsReader.resolveLocalFileSystemReference( lfsUrl );
-                    delete mediaItem.file;
+
                 } else {
+
                     // remote saving
                     try {
                         const formData = new FormData();
@@ -63,13 +64,14 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
                         //          }
                         //     }
                         mediaItem.src = `${ apiBaseUrl }/${ result.data.filedata }`;
-                        delete mediaItem.file;
                     } catch ( error ) {
                         console.error( 'Upload Fehler:', error );
                         this.viewProxy.update( { error: ": Upload fehlgeschlagen!" } );
                         return;
+
                     }
                 }
+                delete mediaItem.file
             }
 
             // create or update depending on status created
@@ -121,13 +123,5 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
                 this.viewProxy.update({ item: mediaItem});
             }
         })
-
-        // handling remote
-        this.viewProxy.bindAction("toggleRemote",(event) => {
-            event.original.preventDefault();
-
-            mediaItem.remote = !mediaItem.remote;
-            this.viewProxy.update({ item: mediaItem});
-        });
     }
 }
