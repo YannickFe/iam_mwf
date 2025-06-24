@@ -11,3 +11,8 @@
     margin: 1rem auto; /* equal margin on left and right, auto-centering */
     object-fit: contain; /* do not change aspect ratio */
 }
+
+.myapp-listitem-img {
+    height: 100%;
+    object-fit: cover;
+}
