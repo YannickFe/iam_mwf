@@ -60,6 +60,8 @@ export default class ListviewViewController extends mwf.ViewController {
         this.showDialog('createEditDialog', {
             item: item,
             actionBindings: {
+
+                //////////////////////////////////////////
                 submitForm: async ( event ) => {
                     event.original.preventDefault();
                     const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
@@ -94,11 +96,13 @@ export default class ListviewViewController extends mwf.ViewController {
                     await this.hideDialog();
                 },
 
+                //////////////////////////////////////////
                 deleteItem: ( event ) => {
                     this.hideDialog();
                     this.deleteItem( item );
                 },
 
+                //////////////////////////////////////////
                 fileSelected: ( event ) => {
                     const file = event.original.target.files[ 0 ];
 
