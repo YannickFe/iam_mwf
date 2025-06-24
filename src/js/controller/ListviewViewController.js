@@ -69,24 +69,18 @@ export default class ListviewViewController extends mwf.ViewController {
                             const lfsUrl = await lfsReader.createLocalFileSystemReference(item.file);
                             item.src = await lfsReader.resolveLocalFileSystemReference(lfsUrl);
                         } else {
-                            try {
-                                const formData = new FormData();
-                                formData.append('filedata', item.file);
+                            const formData = new FormData();
+                            formData.append('filedata', item.file);
 
-                                const response = await fetch(`${apiBaseUrl}/api/upload`, {
-                                    method: 'POST',
-                                    body: formData,
-                                });
+                            const response = await fetch(`${apiBaseUrl}/api/upload`, {
+                                method: 'POST',
+                                body: formData,
+                            });
 
                                 if (!response.ok) throw new Error('Upload fehlgeschlagen'); // TODO: better handling of failed upload
 
-                                const result = await response.json();
-                                item.src = `${apiBaseUrl}/${result.data.filedata}`;
-                            } catch (error) {
-                                console.error('Upload Fehler:', error);
-                                this.viewProxy.update({ error: ": Upload fehlgeschlagen!" });
-                                return;
-                            }
+                            const result = await response.json();
+                            item.src = `${apiBaseUrl}/${result.data.filedata}`;
                         }
                         delete item.file;
                     }
