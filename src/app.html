@@ -90,19 +90,16 @@
         <h2>{{#if item.created}}Medium editieren{{else}}Neues Medium{{/if}}</h2>
         <form id="itemEditForm" on-submit="submitForm">
 
-            <fieldset class="mwf-material">
-                <legend>Remote speichern</legend>
-                <input name="remote" autocomplete="off" class="mwf-autofocus" type="checkbox" value="{{item.remote}}" disabled="{{#if item.created}}disabled{{/if}}"/>
-            </fieldset>
-
-            <fieldset class="mwf-material">
-                <legend>Titel{{error}}</legend>
-                <input name="title" autocomplete="off" class="mwf-autofocus" type="text" value="{{item.title}}"/>
+            <fieldset class="#mwf-material">
+                <legend>Titel</legend>
+                <input name="title" autocomplete="off" class="mwf-autofocus" type="text" value="{{item.title}}" required="required"/>
+                <input on-change="fileSelected" type="file" class="mwf-material-altinput" required="{{#unless item.created }}required{{ /unless }}" accept="image/*"/>
+                <label class="mwf-material-altinput mwf-imgbutton mwf-img-camera">Foto</label>
+                <input type="checkbox" on-change="toggleRemote" value="{{item.remote}}" disabled="{{#if item.created}}disabled{{/if}}" title="Remote speichern"/>
             </fieldset>
 
             <fieldset class="mwf-material">
                 <!-- TODO: fix material design -->
-                <input name="imgsrc" on-change="fileSelected" type="file"/>
             </fieldset>
 
             <img id="previewImg" src="{{item.src}}"/>

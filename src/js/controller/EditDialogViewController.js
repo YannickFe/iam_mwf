@@ -62,12 +62,6 @@ export default class EditDialogViewController extends GenericDialogTemplateViewC
                 }
             }
 
-            // validate input
-            if ( !mediaItem.title || !mediaItem.src ) {
-                this.viewProxy.update({ error: ": Eingabe erfoderlich!"});
-                return;
-            }
-
             // create or update depending on status created
             if (mediaItem.created ) {
                 mediaItem.update();
