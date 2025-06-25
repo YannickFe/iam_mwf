@@ -23,12 +23,10 @@ export default class ListviewViewController extends mwf.ViewController {
         this.initialiseListview(items);
 
         this.addListener(new mwf.EventMatcher("crud", "created", "MediaItem"), async (event) => {
-            // resolve the lfsr only if it's used (might be remote, so wir wollen die remote url in src nicht überschreiben)
             event.data.src = await event.data.getResolvedSrc();
             this.addToListview(event.data);
         });
         this.addListener(new mwf.EventMatcher("crud", "updated", "MediaItem"),  async (event) => {
-            // resolve the lfsr only if it's used (might be remote, so wir wollen die remote url in src nicht überschreiben)
             event.data.src = await event.data.getResolvedSrc();
             this.updateInListview(event.data._id, event.data);
         });
