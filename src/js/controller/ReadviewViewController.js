@@ -4,7 +4,7 @@
 import { mwf } from 'vfh-iam-mwf-base';
 import * as entities from '../model/MyEntities.js';
 
-export default class ViewControllerTemplate extends mwf.ViewController {
+export default class ReadviewViewController extends mwf.ViewController {
 
     // instance attributes set by mwf after instantiation
     args;
