@@ -58,7 +58,7 @@ export default class MapsViewController extends mwf.ViewController {
             popupTitle.textContent = item.title;
 
             const popupImage = document.createElement('img');
-            popupImage.src = item.src; // TODO: need to handle lfsr sources - implement a get funciton in enitty for that.
+            popupImage.src = await item.getResolvedSrc(); // TODO: need to handle lfsr sources - implement a get funciton in enitty for that.
             popupImage.classList.add('popup-image');
 
             markerPopup.appendChild( popupTitle );

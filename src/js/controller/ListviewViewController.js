@@ -1,8 +1,5 @@
 import { mwf } from 'vfh-iam-mwf-base';
 import * as entities from '../model/MyEntities.js';
-import { LocalFileSystemReferenceHandler } from '../model/LocalFileSystemReferenceHandler';
-
-const apiBaseUrl = 'http://localhost:7077';
 
 export default class ListviewViewController extends mwf.ViewController {
 
@@ -17,29 +14,22 @@ export default class ListviewViewController extends mwf.ViewController {
         this.addNewMediaItemElement = this.root.querySelector('#addNewMediaItem');
         this.addNewMediaItemElement.onclick = () => this.createEditItem();
 
-        const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
         const items = await entities.MediaItem.readAll();
 
         for (const item of items) {
-            if ( item.lfsr ) {
-                item.src = await lfsReader.resolveLocalFileSystemReference(item.lfsr);
-            }
+            item.src = await item.getResolvedSrc();
         }
 
         this.initialiseListview(items);
 
         this.addListener(new mwf.EventMatcher("crud", "created", "MediaItem"), async (event) => {
-            // resolve the lfsr only if it's used (might be remote, so we dont want to overwrite remote url in src)
-            if ( event.data.lfsr ) {
-                event.data.src = await lfsReader.resolveLocalFileSystemReference(event.data.lfsr);
-            }
+            // resolve the lfsr only if it's used (might be remote, so wir wollen die remote url in src nicht überschreiben)
+            event.data.src = await event.data.getResolvedSrc();
             this.addToListview(event.data);
         });
         this.addListener(new mwf.EventMatcher("crud", "updated", "MediaItem"),  async (event) => {
-            // resolve the lfsr only if it's used (might be remote, so we dont want to overwrite remote url in src)
-            if ( event.data.lfsr ) {
-                event.data.src = await lfsReader.resolveLocalFileSystemReference(event.data.lfsr);
-            }
+            // resolve the lfsr only if it's used (might be remote, so wir wollen die remote url in src nicht überschreiben)
+            event.data.src = await event.data.getResolvedSrc();
             this.updateInListview(event.data._id, event.data);
         });
         this.addListener(new mwf.EventMatcher("crud", "deleted", "MediaItem"), (event) => {
@@ -74,26 +64,13 @@ export default class ListviewViewController extends mwf.ViewController {
                 //////////////////////////////////////////
                 submitForm: async ( event ) => {
                     event.original.preventDefault();
-                    const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
 
                     if (item.file) {
                         if (!item.remote) {
-                            item.lfsr =  await lfsReader.createLocalFileSystemReference(item.file);
+                            await item.setLocalFile();
                         } else {
-                            const formData = new FormData();
-                            formData.append('filedata', item.file);
-
-                            const response = await fetch(`${apiBaseUrl}/api/upload`, {
-                                method: 'POST',
-                                body: formData,
-                            });
-
-                                if (!response.ok) throw new Error('Upload fehlgeschlagen'); // TODO: better handling of failed upload
-
-                            const result = await response.json();
-                            item.src = `${apiBaseUrl}/${result.data.filedata}`;
+                            await item.setRemoteFile();
                         }
-                        delete item.file;
                     }
 
                     if (item.created) {

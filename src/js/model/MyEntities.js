@@ -4,8 +4,11 @@
  * this skript defines the data types used by the application and the model operations for handling instances of the latter
  */
 
-import { mwfUtils } from 'vfh-iam-mwf-base';
 import { EntityManager } from 'vfh-iam-mwf-base';
+import { LocalFileSystemReferenceHandler } from './LocalFileSystemReferenceHandler';
+
+const apiBaseUrl = 'http://localhost:7077';
+
 
 /*************
  * example entity
@@ -55,6 +58,45 @@ export class MediaItem extends EntityManager.Entity {
     get remoteDisplayValue() {
         return this.remote ? 'Remote' : 'Lokal';
     }
+
+    async getResolvedSrc() {
+        if (!this.remote) {
+            const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
+            return await lfsReader.resolveLocalFileSystemReference(this.lfsr);
+        } else {
+            return this.src;
+        }
+    }
+
+    async setLocalFile() {
+        if (!this.file) {
+            throw new Error('No file selected');
+        }
+        const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
+        this.lfsr = await lfsReader.createLocalFileSystemReference(this.file);
+
+        delete this.file;
+    }
+
+    async setRemoteFile() {
+        if (!this.file) {
+            throw new Error('No file selected');
+        }
+
+        const formData = new FormData();
+        formData.append('filedata', this.file);
+
+        const response = await fetch(`${apiBaseUrl}/api/upload`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) throw new Error('Upload fehlgeschlagen'); // TODO: better handling of failed upload
+
+        const result = await response.json();
+        this.src = `${apiBaseUrl}/${result.data.filedata}`;
+
+        delete this.file;
+
+    }
 }
-
-
