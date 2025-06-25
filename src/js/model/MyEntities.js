@@ -25,6 +25,7 @@ export class MyEntity extends EntityManager.Entity {
 export class MediaItem extends EntityManager.Entity {
     title;
     remote;
+    latlng;
     lfsr;
     src;
     contentType;

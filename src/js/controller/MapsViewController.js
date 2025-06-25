@@ -37,5 +37,22 @@ export default class MapsViewController extends mwf.ViewController {
         leafletMapController.setView([51.5, 8.7], 6);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo( leafletMapController );
+
+        const items = await entities.MediaItem.readAll();
+
+        // genereate random latlng coords in germany for each item to test: //TODO: remove
+        for (const item of items) {
+            item.latlng = {
+                lat: 51.5 + Math.random(),
+                lng: 8.7 + Math.random(),
+            };
+        }
+
+        for( const item of items ) {
+            const marker = L.marker( item.latlng );
+            marker.addTo( leafletMapController );
+        }
+        // pass all latlng of all items as array to fitBounds to frame the cords in the view
+        leafletMapController.fitBounds(items.map(item => [item.latlng.lat, item.latlng.lng]));
     }
 }
