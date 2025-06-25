@@ -26,10 +26,12 @@ export default class ListviewViewController extends mwf.ViewController {
 
         this.initialiseListview(items);
 
-        this.addListener(new mwf.EventMatcher("crud", "created", "MediaItem"), (event) => {
+        this.addListener(new mwf.EventMatcher("crud", "created", "MediaItem"), async (event) => {
+            event.data.src = await lfsReader.resolveLocalFileSystemReference(event.data.src);
             this.addToListview(event.data);
         });
-        this.addListener(new mwf.EventMatcher("crud", "updated", "MediaItem"), (event) => {
+        this.addListener(new mwf.EventMatcher("crud", "updated", "MediaItem"),  async (event) => {
+            event.data.src = await lfsReader.resolveLocalFileSystemReference(event.data.src);
             this.updateInListview(event.data._id, event.data);
         });
         this.addListener(new mwf.EventMatcher("crud", "deleted", "MediaItem"), (event) => {
@@ -68,8 +70,7 @@ export default class ListviewViewController extends mwf.ViewController {
 
                     if (item.file) {
                         if (!item.remote) {
-                            const lfsUrl = await lfsReader.createLocalFileSystemReference(item.file);
-                            item.src = await lfsReader.resolveLocalFileSystemReference(lfsUrl);
+                            item.src =  await lfsReader.createLocalFileSystemReference(item.file);
                         } else {
                             const formData = new FormData();
                             formData.append('filedata', item.file);
