@@ -50,6 +50,10 @@ export class MediaItem extends EntityManager.Entity {
 
         return type || 'UNKNOWN';
     }
+
+    get remoteDisplayValue() {
+        return this.remote ? 'Remote' : 'Lokal';
+    }
 }
 
 
