@@ -16,6 +16,7 @@ export default class ReadviewViewController extends mwf.ViewController {
      */
     async oncreate() {
         var mediaItem = this.args.item;
+        mediaItem.src = await mediaItem.getResolvedSrc();
         this.viewProxy = this.bindElement("readViewTemplate",{item: mediaItem},this.root).viewProxy;
         this.viewProxy.bindAction("deleteItem",(() => {
             this.showDialog( 'deleteDialog', {

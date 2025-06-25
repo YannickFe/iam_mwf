@@ -8,6 +8,7 @@ import { EntityManager } from 'vfh-iam-mwf-base';
 import { LocalFileSystemReferenceHandler } from './LocalFileSystemReferenceHandler';
 
 const apiBaseUrl = 'http://localhost:7077';
+const defaultLatLng = { lat: 51.5, lng: 8.7 };
 
 
 /*************
@@ -72,6 +73,9 @@ export class MediaItem extends EntityManager.Entity {
         if (!this.file) {
             throw new Error('No file selected');
         }
+
+        this.setLocationFromFile();
+
         const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
         this.lfsr = await lfsReader.createLocalFileSystemReference(this.file);
 
@@ -82,6 +86,8 @@ export class MediaItem extends EntityManager.Entity {
         if (!this.file) {
             throw new Error('No file selected');
         }
+
+        this.setLocationFromFile();
 
         const formData = new FormData();
         formData.append('filedata', this.file);
@@ -97,6 +103,14 @@ export class MediaItem extends EntityManager.Entity {
         this.src = `${apiBaseUrl}/${result.data.filedata}`;
 
         delete this.file;
+    }
 
+    setLocationFromFile() {
+        if (!this.file) {
+            throw new Error('No file selected');
+        }
+
+        this.latlng = defaultLatLng;
+        console.log('location from file: ', this.file);
     }
 }
