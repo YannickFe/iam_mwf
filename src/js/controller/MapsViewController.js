@@ -29,47 +29,13 @@ export default class MapsViewController extends mwf.ViewController {
         console.log( 'MapsViewController()' );
     }
 
-    /*
-     * for views that initiate transitions to other views
-     * NOTE: return false if the view shall not be returned to, e.g. because we immediately want to display its previous view. Otherwise, do not return anything.
-     */
-    async onReturnFromNextView( nextviewid, returnValue, returnStatus ) {
-        // TODO: check from which view, and possibly with which status, we are returning, and handle returnValue accordingly
+    async onresume() {
+        await super.onresume();
+
+        // create leafletMapController and set view to frame Germany
+        const leafletMapController = L.map('myapp-maproot');
+        leafletMapController.setView([51.5, 8.7], 6);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo( leafletMapController );
     }
-
-    /*
-     * for views with listviews: bind a list item to an item view
-     * TODO: delete if no listview is used or if databinding uses ractive templates
-     */
-    bindListItemView( listviewid, itemview, itemobj ) {
-        // TODO: implement how attributes of itemobj shall be displayed in itemview
-    }
-
-    /*
-     * for views with listviews: react to the selection of a listitem
-     * TODO: delete if no listview is used or if item selection is specified by targetview/targetaction
-     */
-    onListItemSelected( itemobj, listviewid ) {
-        // TODO: implement how selection of itemobj shall be handled
-    }
-
-    /*
-     * for views with listviews: react to the selection of a listitem menu option
-     * TODO: delete if no listview is used or if item selection is specified by targetview/targetaction
-     */
-    onListItemMenuItemSelected( menuitemview, itemobj, listview ) {
-        // TODO: implement how selection of the option menuitemview for itemobj shall be handled
-    }
-
-    /*
-     * for views with dialogs
-     * TODO: delete if no dialogs are used or if generic controller for dialogs is employed
-     */
-    bindDialog( dialogid, dialogview, dialogdataobj ) {
-        // call the supertype function
-        super.bindDialog( dialogid, dialogview, dialogdataobj );
-
-        // TODO: implement action bindings for dialog, accessing dialog.root
-    }
-
 }
