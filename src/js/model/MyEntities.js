@@ -91,7 +91,7 @@ export class MediaItem extends EntityManager.Entity {
             body: formData,
         });
 
-        if (!response.ok) throw new Error('Upload fehlgeschlagen'); // TODO: better handling of failed upload
+        if (!response.ok) throw new Error('Upload failed'); // TODO: better handling of failed upload
 
         const result = await response.json();
         this.src = `${apiBaseUrl}/${result.data.filedata}`;
