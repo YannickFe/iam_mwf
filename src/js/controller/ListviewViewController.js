@@ -29,11 +29,17 @@ export default class ListviewViewController extends mwf.ViewController {
         this.initialiseListview(items);
 
         this.addListener(new mwf.EventMatcher("crud", "created", "MediaItem"), async (event) => {
-            event.data.src = await lfsReader.resolveLocalFileSystemReference(event.data.lfsr);
+            // resolve the lfsr only if it's used (might be remote, so we dont want to overwrite remote url in src)
+            if ( event.data.lfsr ) {
+                event.data.src = await lfsReader.resolveLocalFileSystemReference(event.data.lfsr);
+            }
             this.addToListview(event.data);
         });
         this.addListener(new mwf.EventMatcher("crud", "updated", "MediaItem"),  async (event) => {
-            event.data.src = await lfsReader.resolveLocalFileSystemReference(event.data.lfsr);
+            // resolve the lfsr only if it's used (might be remote, so we dont want to overwrite remote url in src)
+            if ( event.data.lfsr ) {
+                event.data.src = await lfsReader.resolveLocalFileSystemReference(event.data.lfsr);
+            }
             this.updateInListview(event.data._id, event.data);
         });
         this.addListener(new mwf.EventMatcher("crud", "deleted", "MediaItem"), (event) => {
@@ -120,7 +126,6 @@ export default class ListviewViewController extends mwf.ViewController {
                         this.dialog.viewProxy.update( { item: item } );
                     }
                 },
-
             }
         });
     }
