@@ -21,3 +21,8 @@
     height: 100%;
     width: 100%;
 }
+
+.leaflet-popup-content img {
+        height: 100%;
+        width: 100%;
+}

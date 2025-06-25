@@ -51,6 +51,20 @@ export default class MapsViewController extends mwf.ViewController {
         for( const item of items ) {
             const marker = L.marker( item.latlng );
             marker.addTo( leafletMapController );
+
+            const markerPopup = document.createElement('div');
+
+            const popupTitle = document.createElement('h3');
+            popupTitle.textContent = item.title;
+
+            const popupImage = document.createElement('img');
+            popupImage.src = item.src; // TODO: need to handle lfsr sources - implement a get funciton in enitty for that.
+            popupImage.classList.add('popup-image');
+
+            markerPopup.appendChild( popupTitle );
+            markerPopup.appendChild( popupImage );
+
+            marker.bindPopup( markerPopup );
         }
         // pass all latlng of all items as array to fitBounds to frame the cords in the view
         leafletMapController.fitBounds(items.map(item => [item.latlng.lat, item.latlng.lng]));
