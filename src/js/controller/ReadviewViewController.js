@@ -42,6 +42,6 @@ export default class ReadviewViewController extends mwf.ViewController {
     constructor() {
         super();
 
-        console.log( 'ViewControllerTemplate()' );
+        console.log( 'ReadviewViewController()' );
     }
 }
