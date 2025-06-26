@@ -5,6 +5,8 @@ import { mwf } from 'vfh-iam-mwf-base';
 import { mwfUtils } from 'vfh-iam-mwf-base';
 import * as entities from '../model/MyEntities.js';
 
+let leafletMapController;
+
 export default class MapsViewController extends mwf.ViewController {
 
     // instance attributes set by mwf after instantiation
@@ -47,11 +49,14 @@ export default class MapsViewController extends mwf.ViewController {
     async onresume() {
         await super.onresume();
 
-        //  TODO: fix issue with douple initialisation of map
         // create leafletMapController and set view to frame Germany
-        this.leafletMapController = L.map('myapp-maproot');
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo( this.leafletMapController );
-        this.leafletMapController.setView( [51.5, 8.7], 6);
+        // singleton for leafletMapController to avoid multiple initialisations
+        if ( !leafletMapController ) {
+            leafletMapController = L.map('myapp-maproot');
+        }
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo( leafletMapController );
+        leafletMapController.setView( [51.5, 8.7], 6);
 
 
         let items = await entities.MediaItem.readAll();
@@ -64,7 +69,7 @@ export default class MapsViewController extends mwf.ViewController {
         // pass all latlng of all items as array to fitBounds to frame the cords in the view
         const bounds = items.map(item => [item.latlng.lat, item.latlng.lng]);
         if (bounds.length > 0) { // only fit bounds if there are any - fixes error when no items exist
-            this.leafletMapController.fitBounds(bounds);
+            leafletMapController.fitBounds(bounds);
         }
     }
 
@@ -89,7 +94,7 @@ export default class MapsViewController extends mwf.ViewController {
         }
 
         const marker = L.marker( item.latlng );
-        marker.addTo( this.leafletMapController );
+        marker.addTo( leafletMapController );
         this.markerMap.set( item._id, marker );
 
         let markerPopup = this.getMarkerPopup( item );
