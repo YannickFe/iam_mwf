@@ -11,6 +11,7 @@ export default class MapsViewController extends mwf.ViewController {
     args;
     root;
     leafletMapController;
+    markerMap; // map structure to hold markers by item id for later access
     // TODO-REPEATED: declare custom instance attributes for this controller
 
     /*
@@ -36,6 +37,9 @@ export default class MapsViewController extends mwf.ViewController {
 
     constructor() {
         super();
+
+        // map structure to hold markers by item id for later access like removal
+        this.markerMap = new Map();
 
         console.log( 'MapsViewController()' );
     }
@@ -65,7 +69,11 @@ export default class MapsViewController extends mwf.ViewController {
     }
 
     async removeMarker( item ) {
-        this.leafletMapController.removeMarker( item.latlng );
+        const marker = this.markerMap.get(item.id);
+        if (marker) {
+            marker.remove();
+            this.markers.delete(item.id);
+        }
     }
 
     async updateMarker( item ) {
@@ -75,6 +83,7 @@ export default class MapsViewController extends mwf.ViewController {
     async addMarker( item ) {
         const marker = L.marker( item.latlng );
         marker.addTo( this.leafletMapController );
+        this.markerMap.set( item._id, marker );
 
         this.getMarkerPopup( item ).then((markerPopup) => {
             marker.bindPopup( markerPopup );
