@@ -68,7 +68,7 @@ export default class MapsViewController extends mwf.ViewController {
         }
     }
 
-    async removeMarker( item ) {
+    removeMarker( item ) {
         const marker = this.markerMap.get(item.id);
         if (marker) {
             marker.remove();
@@ -76,28 +76,36 @@ export default class MapsViewController extends mwf.ViewController {
         }
     }
 
-    async updateMarker( item ) {
-        this.removeMarker( item ).then( () => this.addMarker( item ))
+    updateMarker( item ) {
+        this.removeMarker( item );
+        this.addMarker( item );
     }
 
-    async addMarker( item ) {
+    addMarker( item ) {
+
+        // validate item structure
+        if (!item.latlng || !item.latlng.lat || !item.latlng.lng) {
+            throw new Error('No valid latlng for item'); // Ensure item has valid latlng, although this should be filtered out previously
+        }
+
         const marker = L.marker( item.latlng );
         marker.addTo( this.leafletMapController );
         this.markerMap.set( item._id, marker );
 
-        this.getMarkerPopup( item ).then((markerPopup) => {
-            marker.bindPopup( markerPopup );
-        })
+        let markerPopup = this.getMarkerPopup( item );
+        marker.bindPopup( markerPopup );
     }
 
-    async getMarkerPopup(item) {
+    getMarkerPopup(item) {
         const markerPopup = document.createElement('div');
 
         const popupTitle = document.createElement('h3');
         popupTitle.textContent = item.title;
 
         const popupImage = document.createElement('img');
-        popupImage.src = await item.getResolvedSrc();
+        item.getResolvedSrc().then( (src) => {
+            popupImage.src = src;
+        } );
         popupImage.classList.add('popup-image');
 
         markerPopup.appendChild( popupTitle );
