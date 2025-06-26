@@ -73,7 +73,7 @@
 
 
 <!-- MAP VIEW -->
-<div class="mwf-view" id="mapsView" data-mwf-viewcontroller="MapsViewController">
+<div class="mwf-view mwf-view-initial" id="mapsView" data-mwf-viewcontroller="MapsViewController">
     <header>
         <button class="mwf-imgbutton mwf-img-sandwich mwf-left-align mwf-img-sandwich-action"></button>
         <h1>Karte</h1>
@@ -87,21 +87,8 @@
 </div>
 
 
-<!-- Side Menu -->
-<div id="sidemenu" class="mwf-sidemenu mwf-view-component mwf-attaching mwf-initialise-onload" data-mwf-viewcontroller="SidemenuViewController">
-    <ul>
-        <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="mainmenu-items" data-mwf-targetview="listView">
-            <div class="mwf-icon mwf-img-photo-album mwf-left-align"></div>
-            <h2 class="mwf-left-align mwf-li-titleblock">Medien</h2>
-        </li>
-        <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="mainmenu-maps" data-mwf-targetview="mapsView">
-            <div class="mwf-icon mwf-img-map mwf-left-align"></div>
-            <h2 class="mwf-left-align mwf-li-titleblock">Karte</h2>
-        </li>
-    </ul>
-</div>
-
 <!-- Dialogs -->
+<!-- Context Dialog -->
 <div class="mwf-dialog mwf-listitem-menu mwf-template mwf-databind mwf-popup" data-mwf-templatename="mediaItemMenu">
     <header>
         <h2 class="mwf-dyncontent">{{title}}</h2>
@@ -114,6 +101,7 @@
     </main>
 </div>
 
+<!-- Edit Dialog -->
 <div class="mwf-dialog mwf-popup mwf-template mwf-databind mwf-view-component"
      data-mwf-viewcontroller="GenericDialogTemplateViewController" data-mwf-templatename="createEditDialog">
     <main>
@@ -144,6 +132,7 @@
     </main>
 </div>
 
+<!-- Delete Dialog -->
 <div class="mwf-dialog mwf-popup mwf-template mwf-databind mwf-view-component"
      data-mwf-viewcontroller="GenericDialogTemplateViewController" data-mwf-templatename="deleteDialog">
     <main>
@@ -158,6 +147,21 @@
         </div>
 
     </main>
+</div>
+
+
+<!-- Side Menu -->
+<div id="sidemenu" class="mwf-sidemenu mwf-view-component mwf-attaching mwf-initialise-onload" data-mwf-viewcontroller="SidemenuViewController">
+    <ul>
+        <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="mainmenu-items" data-mwf-targetview="listView">
+            <div class="mwf-icon mwf-img-photo-album mwf-left-align"></div>
+            <h2 class="mwf-left-align mwf-li-titleblock">Medien</h2>
+        </li>
+        <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="mainmenu-maps" data-mwf-targetview="mapsView">
+            <div class="mwf-icon mwf-img-map mwf-left-align"></div>
+            <h2 class="mwf-left-align mwf-li-titleblock">Karte</h2>
+        </li>
+    </ul>
 </div>
 
 </body>
