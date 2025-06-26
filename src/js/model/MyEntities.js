@@ -64,7 +64,10 @@ export class MediaItem extends EntityManager.Entity {
         if ( !this.latlng ) {
             return 'Standort unbekannt';
         }
-        return `Lat: ${this.latlng.latitude}, Lng: ${this.latlng.longitude}`;
+        // format the latitude and longitude to 3 decimal places if they are numbers
+        const lat = typeof this.latlng.latitude === 'number' ? this.latlng.latitude.toFixed(3) : this.latlng.latitude;
+        const lng = typeof this.latlng.longitude === 'number' ? this.latlng.longitude.toFixed(3) : this.latlng.longitude;
+        return `Lat: ${lat}, Lng: ${lng}`;
     }
 
     async getResolvedSrc() {
