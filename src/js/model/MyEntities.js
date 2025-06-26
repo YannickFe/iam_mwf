@@ -60,6 +60,13 @@ export class MediaItem extends EntityManager.Entity {
         return this.remote ? 'Remote' : 'Lokal';
     }
 
+    get latlngDisplayValue() {
+        if ( !this.latlng ) {
+            return 'Standort unbekannt';
+        }
+        return `Lat: ${this.latlng.lat}, Lng: ${this.latlng.lng}`;
+    }
+
     async getResolvedSrc() {
         if (!this.remote) {
             const lfsReader = await LocalFileSystemReferenceHandler.getInstance();
