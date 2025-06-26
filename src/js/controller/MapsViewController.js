@@ -60,8 +60,25 @@ export default class MapsViewController extends mwf.ViewController {
 
 
         let items = await entities.MediaItem.readAll();
-        // filter out all items with no latlng and validate structure of latlng
-        items = items.filter(item => item.latlng && item.latlng.lat && item.latlng.lng);
+
+        // filter out all items that do not have a valid latlng
+        // validate latlng and convert to L.LatLng if necessary
+        items = items.filter(item => {
+            if (!item.latlng || !item.latlng.lat || !item.latlng.lng) return false;
+
+            // Replace comma with dot and parse to float
+            item.latlng.lat = parseFloat(String(item.latlng.lat).replace(',', '.'));
+            item.latlng.lng = parseFloat(String(item.latlng.lng).replace(',', '.'));
+
+            if (isNaN(item.latlng.lat ) || isNaN(item.latlng.lng)) return false;
+
+            // Ensure latlng is a valid L.LatLng object
+            if (!(item.latlng instanceof L.LatLng)) {
+                item.latlng = L.latLng(item.latlng.lat, item.latlng.lng);
+            }
+
+            return true;
+        });
 
         for( const item of items ) {
             await this.addMarker( item );
