@@ -62,29 +62,15 @@ export default class MapsViewController extends mwf.ViewController {
         let items = await entities.MediaItem.readAll();
 
         // filter out all items that do not have a valid latlng
-        // validate latlng and convert to L.LatLng if necessary
         items = items.filter(item => {
-            if (!item.latlng || !item.latlng.lat || !item.latlng.lng) return false;
-
-            // Replace comma with dot and parse to float
-            item.latlng.lat = parseFloat(String(item.latlng.lat).replace(',', '.'));
-            item.latlng.lng = parseFloat(String(item.latlng.lng).replace(',', '.'));
-
-            if (isNaN(item.latlng.lat ) || isNaN(item.latlng.lng)) return false;
-
-            // Ensure latlng is a valid L.LatLng object
-            if (!(item.latlng instanceof L.LatLng)) {
-                item.latlng = L.latLng(item.latlng.lat, item.latlng.lng);
-            }
-
-            return true;
+            return item.isLatlngValid();
         });
 
         for( const item of items ) {
             await this.addMarker( item );
         }
         // pass all latlng of all items as array to fitBounds to frame the cords in the view
-        const bounds = items.map(item => [item.latlng.lat, item.latlng.lng]);
+        const bounds = items.map(item => [item.latlng.latitude, item.latlng.longitude]);
         if (bounds.length > 0) { // only fit bounds if there are any - fixes error when no items exist
             leafletMapController.fitBounds(bounds);
         }
@@ -106,11 +92,11 @@ export default class MapsViewController extends mwf.ViewController {
     addMarker( item ) {
 
         // validate item structure
-        if (!item.latlng || !item.latlng.lat || !item.latlng.lng) {
-            throw new Error('No valid latlng for item'); // Ensure item has valid latlng, although this should be filtered out previously
+        if (!item.isLatlngValid()) {
+            throw new Error('Invalid coordinates');
         }
 
-        const marker = L.marker( item.latlng );
+        const marker = L.marker( L.latLng(item.latlng.latitude, item.latlng.longitude));
         marker.addTo( leafletMapController );
         this.markerMap.set( item._id, marker );
 

@@ -6,7 +6,7 @@
 
 import { EntityManager } from 'vfh-iam-mwf-base';
 import { LocalFileSystemReferenceHandler } from './LocalFileSystemReferenceHandler';
-import ExifReader from 'exifreader';
+import exifr from 'exifr'; // in contrast to exifreader this library supports easy GPS data extraction
 
 const apiBaseUrl = 'http://localhost:7077';
 
@@ -64,7 +64,7 @@ export class MediaItem extends EntityManager.Entity {
         if ( !this.latlng ) {
             return 'Standort unbekannt';
         }
-        return `Lat: ${this.latlng.lat}, Lng: ${this.latlng.lng}`;
+        return `Lat: ${this.latlng.latitude}, Lng: ${this.latlng.longitude}`;
     }
 
     async getResolvedSrc() {
@@ -117,17 +117,28 @@ export class MediaItem extends EntityManager.Entity {
             throw new Error('No file selected');
         }
 
-        ExifReader.load(this.file).then((metadata) => {
-
-            const lat = metadata.GPSLatitude?.value?.[0];
-            const lng = metadata.GPSLongitude?.value?.[0];
-
-            if (lat != null && lng != null) {
-                this.latlng = { lat, lng };
-            } else {
-                this.latlng = null;
+        exifr.gps(this.file).then((coords) => {
+            // handle default gps data if no GPS data is available
+            if (!coords) {
+                // use default location if no GPS data is available as required by the task
+                coords = { latitude: 52.512764, longitude: 13.453245 }; // (Berlin coordinates)
             }
 
+            // validate coordinates
+            if (!this.constructor._isLatlngValid(coords)) {
+                throw new Error('Invalid coordinates');
+            }
+
+            this.latlng = coords;
         });
+
+    }
+    isLatlngValid() {
+        return this.constructor._isLatlngValid(this.latlng);
+    }
+    static _isLatlngValid( latlng ) {
+        return latlng &&
+                 typeof latlng.latitude === 'number' &&
+                 typeof latlng.longitude === 'number';
     }
 }
