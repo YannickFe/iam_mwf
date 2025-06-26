@@ -43,21 +43,16 @@ export default class MapsViewController extends mwf.ViewController {
     async onresume() {
         await super.onresume();
 
+        //  TODO: fix issue with douple initialisation of map
         // create leafletMapController and set view to frame Germany
         this.leafletMapController = L.map('myapp-maproot');
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo( this.leafletMapController );
-        // this.leafletMapController.setView( [51.5, 8.7], 6);
+        this.leafletMapController.setView( [51.5, 8.7], 6);
 
 
-        const items = await entities.MediaItem.readAll();
-
-        // genereate random latlng coords in germany for each item to test: //TODO: remove
-        for (const item of items) {
-            item.latlng = {
-                lat: 51.5 + Math.random(),
-                lng: 8.7 + Math.random(),
-            };
-        }
+        let items = await entities.MediaItem.readAll();
+        // filter out all items with no latlng and validate structure of latlng
+        items = items.filter(item => item.latlng && item.latlng.lat && item.latlng.lng);
 
         for( const item of items ) {
             await this.addMarker( item );

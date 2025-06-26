@@ -6,9 +6,9 @@
 
 import { EntityManager } from 'vfh-iam-mwf-base';
 import { LocalFileSystemReferenceHandler } from './LocalFileSystemReferenceHandler';
+import ExifReader from 'exifreader';
 
 const apiBaseUrl = 'http://localhost:7077';
-const defaultLatLng = { lat: 51.5, lng: 8.7 };
 
 
 /*************
@@ -110,7 +110,17 @@ export class MediaItem extends EntityManager.Entity {
             throw new Error('No file selected');
         }
 
-        this.latlng = defaultLatLng;
-        console.log('location from file: ', this.file);
+        ExifReader.load(this.file).then((metadata) => {
+
+            const lat = metadata.GPSLatitude?.value?.[0];
+            const lng = metadata.GPSLongitude?.value?.[0];
+
+            if (lat != null && lng != null) {
+                this.latlng = { lat, lng };
+            } else {
+                this.latlng = null;
+            }
+
+        });
     }
 }
